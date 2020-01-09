@@ -1,0 +1,98 @@
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+
+
+//class
+class point
+{
+public:
+	point(int a, int b)
+	{
+		X = a;
+		Y = b;
+		cout << endl << "初始构造了一个Point!" << endl;
+	}
+	point() = default;
+	point(const point&p)
+	{
+		X = p.X;
+		Y = p.Y;
+		cout << endl << "复制构造了一个Point!" << endl;
+	}
+	~point() {}
+	int get_X();
+	int get_Y();
+	void show_point();
+private:
+	int X;
+	int Y;
+};
+int point::get_X()
+{
+	return X;
+}
+int point::get_Y()
+{
+	return Y;
+}
+void point::show_point()
+{
+	cout << "(" << X << "," << Y << ")";
+}
+
+
+
+class line
+{
+public:
+	line(point a, point b):point1(a), point2(b) 
+	{
+		cout << endl << "初始构造了一个Line!" << endl;
+	}
+	line(const line&p):point1(p.point1), point2(p.point2)
+	{
+		cout << endl << "复制构造了一个Line!" << endl;
+	}
+	~line() {}
+	point get_point1();
+	point get_point2();
+	void show_line();
+private:
+	point point1;
+	point point2;
+};
+point line::get_point1()
+{
+	return point1;
+}
+point line::get_point2()
+{
+	return point2;
+}
+void line::show_line()
+{
+	point1.show_point();
+	cout << "→";
+	point2.show_point();
+	cout << endl;
+}
+
+
+//main函数
+int main()
+{
+	point x(1, 2);
+	point y(3, 4);
+	line L(x, y);
+	line T(L);
+	return 0;
+}
+
+//调试结果：用赋值操作符时，point1 = a即使是逐语句也是一步完成，也就是说没有调用复制构造函数
+//			用初始化列表，即函数形式point1（a）时，逐语句会进入point的复制构造函数
+//结论：由于复制构造函数只会在类对象作为初始、形参、返回值时被系统调用，所以当类中成员有类类型
+时，初始构造函数和复制构造函数应在初始列表进行初始类类型成员，其他基本类型成员可以在函数体中用
+赋值操作完成
